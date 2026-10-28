@@ -1,0 +1,37 @@
+# Environment variables (API Keys & Secrets - NEVER commit to GitHub!)
+.env
+.env.local
+*.env
+
+# Streamlit local secrets
+.streamlit/secrets.toml
+
+# Personal manual backups & private notes (NEVER commit to GitHub!)
+*手動備份*
+*備份*
+*backup*
+*對話*
+conversatio*.md
+conversation*.md
+表達能力特訓 Agent-*.md
+
+# Large media files & screen recordings (NEVER commit to GitHub!)
+20261028/
+*.mp4
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# System & IDE files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
