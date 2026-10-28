@@ -233,21 +233,28 @@ with st.sidebar:
     st.markdown("🐱 **專屬教練**：mia貓")
     st.divider()
 
-    # API Key 輸入區
-    default_key = os.getenv("GEMINI_API_KEY", "")
-    if not default_key:
-        try:
-            if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-                default_key = st.secrets["GEMINI_API_KEY"]
-        except Exception:
-            pass
+    # API Key 安全讀取（若雲端 Secrets 已配置，直接後台讀取，絕不傳送到前端輸入框！）
+    cloud_key = ""
+    try:
+        if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+            cloud_key = str(st.secrets["GEMINI_API_KEY"]).strip()
+    except Exception:
+        pass
+    if not cloud_key:
+        cloud_key = os.getenv("GEMINI_API_KEY", "").strip()
 
-    user_api_key = st.text_input(
-        "🔑 Gemini API Key（選填）：",
-        value=default_key,
-        type="password",
-        help="輸入你的 Gemini API Key；若沒有，系統會啟動【免 Key 智慧模擬演練模式】，依然能正常練習喔！"
-    )
+    if cloud_key:
+        # 雲端已配置金鑰：後台直接使用，絕不將明文或密碼框的值傳給前端！保護隱私！
+        user_api_key = cloud_key
+        st.success("🔒 **雲端安全金鑰：已加載隱藏**\n\n（金鑰已安全保密，訪客免填即可直接體驗真 AI！）")
+    else:
+        # 本地或未配置雲端金鑰：才開放手動輸入
+        user_api_key = st.text_input(
+            "🔑 Gemini API Key（選填）：",
+            value="",
+            type="password",
+            help="輸入你的 Gemini API Key；若沒有，系統會啟動【免 Key 智慧模擬演練模式】，依然能正常練習喔！"
+        )
 
     client = get_gemini_client(user_api_key)
     if client:
